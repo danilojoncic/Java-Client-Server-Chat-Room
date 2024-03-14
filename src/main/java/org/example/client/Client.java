@@ -19,18 +19,18 @@ public class Client {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
+            //korisnik se predstavlja ko je
             Scanner scanner = new Scanner(System.in);
             System.out.println(in.readLine());
             System.out.println(in.readLine());
             userName = scanner.nextLine();
 
-
+            //saljemo username
             out.println(userName);
-            System.out.println(in.readLine());
-
             Thread t2 = new Thread(new ClientReaderThread(in));
             t2.start();
             while (true) {
+                //klijent main thread samo salje poruke
                 String message = scanner.nextLine();
                 out.println(message);
                 if(message.equalsIgnoreCase("exit")){
@@ -41,7 +41,7 @@ public class Client {
 
         } catch (IOException e) {
             System.err.println("The Server is unavailable!");
-            e.printStackTrace();
+            //e.printStackTrace();
         } finally {
             if (in != null) {
                 try {

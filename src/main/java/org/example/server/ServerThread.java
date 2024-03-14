@@ -14,11 +14,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ServerThread implements Runnable{
 
     private Socket socket;
-    private volatile Queue<Message> messageQueue = new ConcurrentLinkedQueue();
 
-    public ServerThread(Socket socket, Queue msgQueue) {
+    public ServerThread(Socket socket) {
         this.socket = socket;
-        this.messageQueue = msgQueue;
     }
     @Override
     public void run() {
@@ -37,9 +35,12 @@ public class ServerThread implements Runnable{
 
 
             while (true) {
+                //prima poruku
                 Message message = new Message(username,in.readLine(),new Date());
-                messageQueue.add(message);
-                out.println(messageQueue.poll());
+                //dodaje je na queue
+                Keeper.messageQueue.add(message);
+                //salje nazad
+                out.println(Keeper.messageQueue.poll());
             }
 
         } catch (IOException e) {
@@ -59,7 +60,7 @@ public class ServerThread implements Runnable{
             }
 
             if (this.socket != null) {
-                try {
+                   try {
                     socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();

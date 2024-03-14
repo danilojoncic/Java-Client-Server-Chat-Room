@@ -39,7 +39,7 @@ public class Message implements Comparable<Message>{
 
     @Override
     public String toString() {
-        return "[" + sentTime.toString() + "]" + author + "->" + content;
+        return "[" + sentTime.toString() + "]" + author + ": " + content;
     }
 
     @Override

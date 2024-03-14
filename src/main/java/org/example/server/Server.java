@@ -14,7 +14,7 @@ public class Server {
                 System.out.println("Waiting for connection...");
                 Socket socket = serverSocket.accept();
                 System.out.println("Connected to " + socket.getInetAddress().toString());
-                Thread thread = new Thread(new ServerThread(socket,Keeper.messageQueue));
+                Thread thread = new Thread(new ServerThread(socket));
                 thread.start();
             }
         }catch (IOException e){

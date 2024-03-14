@@ -18,6 +18,7 @@ public class ClientReaderThread implements Runnable{
     public void run() {
         try {
             while(true){
+                //klijent reader thread samo cita poruke koje mu stizu sa servera
                 System.out.println(br.readLine());
             }
         } catch (IOException e) {
