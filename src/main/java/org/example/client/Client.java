@@ -7,62 +7,46 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    public static void main(String[] args) {
-        Socket socket = null;
-        BufferedReader in = null;
-        PrintWriter out = null;
-        String userName = null;
+    private String username;
+    public static Socket socket = null;
+    public static BufferedReader in = null;
+    public static PrintWriter out = null;
 
-        try {
-            socket = new Socket(Keeper.address, Keeper.port);
+    public Client() throws IOException, InterruptedException {
+        socket = new Socket(Keeper.address,Keeper.port);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
+        Scanner scanner = new Scanner(System.in);
 
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+        //odgovor serveru na pitanje ko je korisnik
+        System.out.println(in.readLine());
+        username = scanner.nextLine();
+        out.println(username);
 
-            //korisnik se predstavlja ko je
-            Scanner scanner = new Scanner(System.in);
-            System.out.println(in.readLine());
-            System.out.println(in.readLine());
-            userName = scanner.nextLine();
 
-            //saljemo username
-            out.println(userName);
-            Thread t2 = new Thread(new ClientReaderThread(in));
-            t2.start();
-            while (true) {
-                //klijent main thread samo salje poruke
-                String message = scanner.nextLine();
-                out.println(message);
-                if(message.equalsIgnoreCase("exit")){
-                    out.println(userName + " has exited the chat");
-                    break;
-                }
-            }
-
-        } catch (IOException e) {
-            System.err.println("The Server is unavailable!");
-            //e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (out != null) {
-                out.close();
-            }
-
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        String response = in.readLine();
+        System.out.println(response);
+        if(response.equalsIgnoreCase("User with that name already exists")){
+            return;
         }
+
+        Thread readThread = new Thread(new ClientReciever(socket,this));
+        Thread sendThread = new Thread(new ClientSender(socket,this));
+        readThread.start();
+        sendThread.start();
+        sendThread.join();
+        readThread.join();
     }
 
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new Client();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

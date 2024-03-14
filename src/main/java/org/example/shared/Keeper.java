@@ -1,5 +1,6 @@
 package org.example.shared;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +14,14 @@ public class Keeper {
     jedna je client i jedna server pri cemu ovaj shared paket bi zapravo obe te
     aplikacije imale zasebno u sebi, zasada je cisto radi lakseg pokretanja postavljeno ovako
      */
-    public static volatile Queue<Message> messageQueue = new ConcurrentLinkedQueue<>();
-    public static volatile HashMap<String,Boolean> nameInUse = new HashMap<>();
+    public static volatile List<Message> messages = new ArrayList<>();
+    public static List<PrintWriter> clientsWriters = new ArrayList<>();
+    public static List<String> namesInUse = new ArrayList<>(List.of("exit","EXIT","Exit"));
     public static final int port = 8080;
     public static final String address = "127.0.0.1";
+    public static final Object serverBlocker = new Object();
+    public static final Object nameBlocker = new Object();
+    public static final Object writersBlocker = new Object();
     public static final List<String> bannedWords = new ArrayList<>(List.of(
             "losa_rec","losaRijec","psovka"));
 }

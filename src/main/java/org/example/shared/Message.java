@@ -2,7 +2,7 @@ package org.example.shared;
 
 import java.util.Date;
 
-public class Message implements Comparable<Message>{
+public class Message {
     private String author;
     private String content;
     private Date sentTime;
@@ -40,10 +40,5 @@ public class Message implements Comparable<Message>{
     @Override
     public String toString() {
         return "[" + sentTime.toString() + "]" + author + ": " + content;
-    }
-
-    @Override
-    public int compareTo(Message o) {
-        return this.sentTime.after(o.sentTime)? 1: 0;
     }
 }
