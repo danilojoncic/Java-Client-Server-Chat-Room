@@ -11,6 +11,7 @@ public class Client {
         Socket socket = null;
         BufferedReader in = null;
         PrintWriter out = null;
+        String userName = null;
 
         try {
             socket = new Socket(Keeper.address, Keeper.port);
@@ -19,12 +20,27 @@ public class Client {
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 
             Scanner scanner = new Scanner(System.in);
+            System.out.println(in.readLine());
+            System.out.println(in.readLine());
+            userName = scanner.nextLine();
 
+
+            out.println(userName);
+            System.out.println(in.readLine());
+
+            Thread t2 = new Thread(new ClientReaderThread(in));
+            t2.start();
             while (true) {
-
+                String message = scanner.nextLine();
+                out.println(message);
+                if(message.equalsIgnoreCase("exit")){
+                    out.println(userName + " has exited the chat");
+                    break;
+                }
             }
 
         } catch (IOException e) {
+            System.err.println("The Server is unavailable!");
             e.printStackTrace();
         } finally {
             if (in != null) {
